@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "mod.master_bw3.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"ExampleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
