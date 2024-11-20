@@ -106,8 +106,8 @@ public abstract class SpellPartWidgetMixin implements ParentElement {
 
     @Inject(method = "<init>", at = @At(value = "TAIL"), remap = false)
     private void betterRenderer(SpellPart spellPart, double x, double y, double size, RevisionContext revisionContext, boolean animated, CallbackInfo ci) {
-        ((CoolerSpellCircleRenderer) ((Object) renderer)).sibyl$setSuggestionSupplier(() -> suggestions);
-        ((CoolerSpellCircleRenderer) ((Object) renderer)).sibyl$setSuggestionSelectionSupplier(() -> suggestionSelection);
+        ((CoolerSpellCircleRenderer) ((Object) renderer))._setSuggestionSupplier(() -> suggestions);
+        ((CoolerSpellCircleRenderer) ((Object) renderer))._setSuggestionSelectionSupplier(() -> suggestionSelection);
 
     }
 
