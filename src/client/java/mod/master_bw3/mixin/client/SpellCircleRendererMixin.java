@@ -22,7 +22,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -70,9 +72,11 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
         int selectionIndex = suggestionSelectionGetter.get();
 
         if (isDrawing && !suggestions.isEmpty() && drawingPatternGetter.get().size() > 1) {
+            var drawingSet = new HashSet<>(Pattern.from(drawingPatternGetter.get()).entries());
+            var glyph = new PatternGlyph(new Pattern(suggestions.get(selectionIndex).entries().stream().filter(e -> !drawingSet.contains(e)).toList()));
 
             //pattern
-            drawGlyph(matrices, vertexConsumers, new SpellPart(new PatternGlyph(suggestions.get(selectionIndex))), x, y, size, startingAngle, delta, alphaGetter, normal);
+            drawGlyph(matrices, vertexConsumers, new SpellPart(glyph), x, y, size, startingAngle, delta, alphaGetter, normal);
 
             //suggestions
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
