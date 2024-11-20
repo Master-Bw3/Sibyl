@@ -40,12 +40,12 @@ public class SpellPartWidgetMixin {
     private void selectPatternMixin(SpellPart part, float x, float y, float size, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
         if (drawingPattern != null) {
 
-            var drawn = Pattern.from(drawingPattern).entries();
+            List<Pattern.PatternEntry> drawn = Pattern.from(drawingPattern).entries();
 
 
             suggestions = Tricks.REGISTRY.getEntrySet().stream()
                     .filter(entry -> {
-                        var pattern = entry.getValue().getPattern().entries();
+                        List<Pattern.PatternEntry> pattern = entry.getValue().getPattern().entries();
 
 
                         // return !drawn.equals(pattern) && pattern.containsAll(drawn);
