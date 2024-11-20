@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRenderer {
 
     @Final
-    @Shadow
+    @Shadow(remap = false)
     private boolean inEditor;
     @Shadow(remap = false)
     private Supplier<SpellPart> drawingPartGetter;

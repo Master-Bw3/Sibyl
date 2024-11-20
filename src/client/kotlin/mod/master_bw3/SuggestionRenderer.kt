@@ -29,7 +29,6 @@ object SuggestionRenderer {
         alphaGetter: Function<Float, Float>,
         normal: Vec3d,
     ) {
-        //size -> (float) Math.clamp(1 / (size / context.getScaledWindowHeight() * 3) - 0.2, 0, 1)
         val isDrawing = self.inEditor && self.drawingPart === entry
 
         val suggestions: List<Pattern> = self.suggestions
@@ -37,7 +36,7 @@ object SuggestionRenderer {
 
         if (isDrawing && !suggestions.isEmpty() && self.drawingPattern.size > 1) {
             val drawingSet: HashSet<Pattern.PatternEntry> =
-                HashSet<Pattern.PatternEntry>(Pattern.from(self.drawingPattern).entries())
+                HashSet(Pattern.from(self.drawingPattern).entries())
             val glyph = PatternGlyph(
                 Pattern(
                     suggestions[selectionIndex].entries().stream()

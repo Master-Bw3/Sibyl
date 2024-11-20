@@ -3,7 +3,6 @@
   "package": "mod.master_bw3.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ExampleClientMixin",
     "SpellCircleRendererMixin",
     "SpellPartWidgetMixin"
   ],
