@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+
 @Mixin(SpellCircleRenderer.class)
 public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRenderer {
 
