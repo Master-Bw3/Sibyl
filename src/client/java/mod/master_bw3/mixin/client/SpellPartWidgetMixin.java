@@ -7,7 +7,7 @@ import dev.enjarai.trickster.screen.SpellPartWidget;
 import dev.enjarai.trickster.spell.Pattern;
 import dev.enjarai.trickster.spell.SpellPart;
 import dev.enjarai.trickster.spell.trick.Tricks;
-import mod.master_bw3.GraphExtension;
+import mod.master_bw3.GraphConnected;
 import mod.master_bw3.Sibyl;
 import mod.master_bw3.pond.CoolerSpellCircleRenderer;
 import net.minecraft.client.gui.ParentElement;
@@ -51,35 +51,45 @@ public abstract class SpellPartWidgetMixin implements ParentElement {
 
             suggestions = Tricks.REGISTRY.getEntrySet().stream()
                     .filter(entry -> {
-                        List<Pattern.PatternEntry> pattern = entry.getValue().getPattern().entries();
 
+                        Pattern pattern = entry.getValue().getPattern();
 
-                        //get ordinal of vertices
+                        if (drawingPattern.isEmpty() || drawn.equals(pattern.entries()) || !pattern.entries().containsAll(drawn)) {
+                            return false;
+                        }
+
+                        List<Pattern.PatternEntry> cutPattern = pattern.entries().stream().filter(e -> !drawn.contains(e)).toList();
+
+                        if (!GraphConnected.isConnected(cutPattern)) {
+                            return false;
+                        }
+
+                        //get ordinal of startVertices
                         HashMap<Byte, Integer> ordinals = new HashMap<>();
-                        for (Pattern.PatternEntry patternEntry : pattern) {
+                        for (Pattern.PatternEntry patternEntry : cutPattern) {
                             ordinals.put(patternEntry.p1(), ordinals.getOrDefault(patternEntry.p1(), 0) + 1);
                             ordinals.put(patternEntry.p2(), ordinals.getOrDefault(patternEntry.p2(), 0) + 1);
                         }
 
-                        List<Byte> vertices = new ArrayList<>();
+                        List<Byte> startVertices = new ArrayList<>();
 
                         if (ordinals.values().stream().allMatch(o -> o % 2 == 0)) {
                             //all even ordinal
-                            vertices.addAll(ordinals.keySet());
+                            startVertices.addAll(ordinals.keySet());
                         } else {
                             //has odd ordinal
-                            ordinals.entrySet().stream().filter(e -> e.getValue() % 2 == 1).forEach(e -> vertices.add(e.getKey()));
+                            ordinals.entrySet().stream().filter(e -> e.getValue() % 2 == 1).forEach(e -> startVertices.add(e.getKey()));
+
+                            //must have 0 or 2 odd vertices
+                            if (startVertices.size() != 2) {
+                                return false;
+                            }
                         }
 
-                        return !drawingPattern.isEmpty()
-                                && !drawn.equals(pattern)
-                                && pattern.containsAll(drawn)
-                                && (vertices.contains(drawingPattern.getFirst()));
+
+                        return (startVertices.contains(drawingPattern.getLast()));
 
 
-                        // return !drawn.equals(pattern) && pattern.containsAll(drawn);
-                        //return !drawn.equals(pattern) &&
-                        //(drawingPattern.isEmpty() || GraphExtension.canExtendPathFrom(new GraphExtension.Graph(drawn), new GraphExtension.Graph(pattern), drawingPattern.getLast()));
                     })
                     .sorted(Comparator.comparingInt(entry -> entry.getValue().getPattern().entries().size()))
                     .map(entry -> entry.getValue().getPattern())
