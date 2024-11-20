@@ -25,18 +25,15 @@ object SuggestionLogic {
         if (drawingPattern != null) {
             val drawn: List<Pattern.PatternEntry> = Pattern.from(drawingPattern).entries()
 
-
-            self.suggestions = Tricks.REGISTRY.entrySet.stream()
-                .filter { entry: Map.Entry<RegistryKey<Trick?>?, Trick> ->
-                    val pattern = entry.value.pattern
-                    if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries()
-                            .containsAll(drawn)
-                    ) {
+            self.suggestions = Tricks.REGISTRY
+                .map(Trick::getPattern)
+                .filter { pattern: Pattern ->
+                    if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries().containsAll(drawn)) {
                         return@filter false
                     }
 
                     val cutPattern =
-                        pattern.entries().stream().filter { e: Pattern.PatternEntry -> !drawn.contains(e) }.toList()
+                        pattern.entries().filter { e: Pattern.PatternEntry -> !drawn.contains(e) }.toList()
 
                     if (!GraphConnected.isConnected(cutPattern)) {
                         return@filter false
@@ -51,12 +48,12 @@ object SuggestionLogic {
 
                     val startVertices: MutableList<Byte> = ArrayList()
 
-                    if (ordinals.values.stream().allMatch { o: Int -> o % 2 == 0 }) {
+                    if (ordinals.values.all { o: Int -> o % 2 == 0 }) {
                         //all even ordinal
                         startVertices.addAll(ordinals.keys)
                     } else {
                         //has odd ordinal
-                        ordinals.entries.stream().filter { e: Map.Entry<Byte, Int> -> e.value % 2 == 1 }
+                        ordinals.entries.filter { e: Map.Entry<Byte, Int> -> e.value % 2 == 1 }
                             .forEach { e: Map.Entry<Byte, Int> -> startVertices.add(e.key) }
 
                         //must have 0 or 2 odd vertices
@@ -64,13 +61,13 @@ object SuggestionLogic {
                             return@filter false
                         }
                     }
-                    (startVertices.contains(drawingPattern.last()))
+
+                    return@filter startVertices.contains(drawingPattern.last())
                 }
-                .sorted(Comparator.comparingInt<Map.Entry<RegistryKey<Trick?>?, Trick>> { entry: Map.Entry<RegistryKey<Trick?>?, Trick> -> entry.value.pattern.entries().size })
-                .map<Pattern> { entry: Map.Entry<RegistryKey<Trick?>?, Trick> -> entry.value.pattern }
+                .sortedBy { pattern: Pattern -> pattern.entries().size }
                 .toList()
         } else {
-            self.suggestions = listOf<Pattern>()
+            self.suggestions = listOf()
         }
     }
 }
