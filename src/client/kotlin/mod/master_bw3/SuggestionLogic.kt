@@ -40,10 +40,10 @@ object SuggestionLogic {
                     }
 
                     //get ordinal of startVertices
-                    val ordinals = HashMap<Byte, Int>()
+                    val ordinals = mutableMapOf<Byte, Int>()
                     for (patternEntry in cutPattern) {
-                        ordinals[patternEntry.p1()] = ordinals.getOrDefault(patternEntry.p1(), 0) + 1
-                        ordinals[patternEntry.p2()] = ordinals.getOrDefault(patternEntry.p2(), 0) + 1
+                        ordinals.merge(patternEntry.p1(), 1, Int::plus)
+                        ordinals.merge(patternEntry.p2(), 1, Int::plus)
                     }
 
                     val startVertices: MutableList<Byte> = ArrayList()
