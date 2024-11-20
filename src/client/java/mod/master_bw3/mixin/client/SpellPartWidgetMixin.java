@@ -13,6 +13,7 @@ import mod.master_bw3.pond.CoolerSpellCircleRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,7 +30,11 @@ public class SpellPartWidgetMixin {
     @Shadow(remap = false)
     @Final
     public SpellCircleRenderer renderer;
+
+    @Unique
     private List<Pattern> suggestions = List.of();
+
+    @Unique int suggestionSelection = 0;
 
     @Inject(method = "selectPattern", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;playSoundToPlayer(Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), remap = false)
     private void selectPatternMixin(SpellPart part, float x, float y, float size, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
@@ -62,7 +67,9 @@ public class SpellPartWidgetMixin {
 
     @Inject(method = "<init>", at = @At(value = "TAIL"), remap = false)
     private void betterRenderer(SpellPart spellPart, double x, double y, double size, RevisionContext revisionContext, boolean animated, CallbackInfo ci) {
-        ((CoolerSpellCircleRenderer) ((Object) renderer)).setSuggestionSupplier(() -> suggestions);
+        ((CoolerSpellCircleRenderer) ((Object) renderer)).sibyl$setSuggestionSupplier(() -> suggestions);
+        ((CoolerSpellCircleRenderer) ((Object) renderer)).sibyl$setSuggestionSelectionSupplier(() -> suggestionSelection);
+
     }
 
 

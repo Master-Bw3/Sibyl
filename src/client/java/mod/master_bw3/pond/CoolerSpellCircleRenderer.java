@@ -6,5 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public interface CoolerSpellCircleRenderer {
-    void setSuggestionSupplier(Supplier<List<Pattern>> suggestionsGetter);
+    void sibyl$setSuggestionSupplier(Supplier<List<Pattern>> suggestionsGetter);
+
+    void sibyl$setSuggestionSelectionSupplier(Supplier<Integer> suggestionIndexGetter);
 }
