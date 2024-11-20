@@ -57,7 +57,7 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
 
     //////
 
-    @Inject(method = "selectPattern", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;playSoundToPlayer(Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"), remap = false)
+    @Inject(method = "selectPattern", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;playSoundToPlayer(Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
     private void selectPatternMixin(SpellPart part, float x, float y, float size, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
         SuggestionLogic.INSTANCE.selectPattern(this, part, x, y, size, mouseX, mouseY);
     }
@@ -69,7 +69,7 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
 
     }
 
-    @Inject(method = "mouseReleased", at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/screen/SpellPartWidget;stopDrawing()V"), remap = false)
+    @Inject(method = "mouseReleased", at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/screen/SpellPartWidget;stopDrawing()V"))
     private void handleRightClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         if ( button == 1 && isMutable || isDrawing() && this.drawingPart != null) {
             replaceDrawingWithSuggestion = true;
