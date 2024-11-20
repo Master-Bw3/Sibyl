@@ -61,9 +61,7 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
         this.suggestionSelectionGetter = suggestionIndexGetter;
     }
 
-    @Inject(method = "renderPart",
-            at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/render/SpellCircleRenderer;drawGlyph(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Ldev/enjarai/trickster/spell/SpellPart;DDDDFLjava/util/function/Function;Lnet/minecraft/util/math/Vec3d;)V"),
-            remap = false)
+    @Inject(method = "renderPart", at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/render/SpellCircleRenderer;drawGlyph(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Ldev/enjarai/trickster/spell/SpellPart;DDDDFLjava/util/function/Function;Lnet/minecraft/util/math/Vec3d;)V"), remap = false)
     private void renderSuggestionStuff(MatrixStack matrices, VertexConsumerProvider vertexConsumers, SpellPart entry, double x, double y, double size, double startingAngle, float delta, Function<Float, Float> alphaGetter, Vec3d normal, CallbackInfo ci) {
         //size -> (float) Math.clamp(1 / (size / context.getScaledWindowHeight() * 3) - 0.2, 0, 1)
         boolean isDrawing = inEditor && drawingPartGetter.get() == entry;
@@ -74,11 +72,7 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
         if (isDrawing && !suggestions.isEmpty() && drawingPatternGetter.get().size() > 1) {
 
             //pattern
-            drawGlyph(
-                    matrices, vertexConsumers, new SpellPart(new PatternGlyph(suggestions.get(selectionIndex))),
-                    x, y, size, startingAngle,
-                    delta, alphaGetter, normal
-            );
+            drawGlyph(matrices, vertexConsumers, new SpellPart(new PatternGlyph(suggestions.get(selectionIndex))), x, y, size, startingAngle, delta, alphaGetter, normal);
 
             //suggestions
             TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
@@ -93,8 +87,7 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
                 Pattern suggestion = suggestions.get(i);
                 MutableText text = new PatternGlyph(suggestion).asText().getSiblings().getFirst().copy().formatted(Formatting.LIGHT_PURPLE);
 
-                int space = 0;;
-                ;
+                int space = 0;
 
                 if (i == selectionIndex) {
                     text = text.copy().formatted(Formatting.BOLD);
@@ -103,11 +96,7 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
                     space = textRenderer.getWidth(">");
                 }
 
-                textRenderer.draw(text, (float) (12e14 * size) + space, (i * height) - (0.5f * height * suggestionCount), 0xffffff, false,
-                        matrices.peek().getPositionMatrix(),
-                        vertexConsumers, TextRenderer.TextLayerType.NORMAL,
-                        0, 0xf000f0);
-
+                textRenderer.draw(text, (float) (12e14 * size) + space, (i * height) - (0.5f * height * suggestionCount), 0xffffff, false, matrices.peek().getPositionMatrix(), vertexConsumers, TextRenderer.TextLayerType.NORMAL, 0, 0xf000f0);
 
             }
 
