@@ -1,0 +1,7 @@
+{
+  "sibyl.keys.gui": "Spell GUI",
+  "sibyl.keys.gui.select_suggestion": "Apply Suggestion",
+  "sibyl.keys.gui.next_suggestion": "Next Suggestion",
+  "sibyl.keys.gui.previous_suggestion": "Previous Suggestion"
+
+}
