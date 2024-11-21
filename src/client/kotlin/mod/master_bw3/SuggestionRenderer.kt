@@ -13,6 +13,7 @@ import net.minecraft.text.Text
 import net.minecraft.util.Formatting
 import net.minecraft.util.math.Vec3d
 import java.util.function.Function
+import kotlin.math.max
 import kotlin.math.min
 
 object SuggestionRenderer {
@@ -67,7 +68,11 @@ object SuggestionRenderer {
             matrices.translate(self._toLocalSpace(x), self._toLocalSpace(y), 0f)
 
             val suggestionCount = min(suggestions.size.toDouble(), 5.0).toInt()
-            for (i in 0 until suggestionCount) {
+
+            val start = max(self.suggestionSelection - 5, 0)
+            val end = start + 6
+
+            for (i in start until end) {
                 val suggestion = suggestions[i]
                 var text: MutableText =
                     PatternGlyph(suggestion).asText().siblings.first().copy().formatted(Formatting.LIGHT_PURPLE)
@@ -84,7 +89,7 @@ object SuggestionRenderer {
                 textRenderer.draw(
                     text,
                     (12e14 * size).toFloat() + space,
-                    (i * height) - (0.5f * height * suggestionCount),
+                    ((i - start) * height) - (0.5f * height * suggestionCount),
                     0xffffff,
                     false,
                     matrices.peek().positionMatrix,
