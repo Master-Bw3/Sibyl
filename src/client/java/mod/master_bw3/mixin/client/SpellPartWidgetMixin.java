@@ -8,6 +8,7 @@ import dev.enjarai.trickster.revision.RevisionContext;
 import dev.enjarai.trickster.screen.SpellPartWidget;
 import dev.enjarai.trickster.spell.Pattern;
 import dev.enjarai.trickster.spell.SpellPart;
+import mod.master_bw3.SibylClient;
 import mod.master_bw3.SuggestionLogic;
 import mod.master_bw3.pond.CoolerSpellCircleRenderer;
 import mod.master_bw3.pond.CoolerSpellPartWidget;
@@ -71,7 +72,7 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
 
     @Inject(method = "mouseReleased", at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/screen/SpellPartWidget;stopDrawing()V"))
     private void handleRightClick(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if ( button == 1 && isMutable || isDrawing() && this.drawingPart != null) {
+        if ( button == 1 ) {
             replaceDrawingWithSuggestion = true;
         }
     }
@@ -91,15 +92,13 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == 257) {
+        if (SibylClient.keySelectSuggestion.matchesKey(keyCode, scanCode)) {
             replaceDrawingWithSuggestion = true;
             stopDrawing();
-        } else {
-            suggestionSelection = switch (keyCode) {
-                case 87 -> Math.max(0, suggestionSelection - 1);
-                case 83 -> Math.min(suggestionSelection + 1, suggestions.size() - 1);
-                default -> suggestionSelection;
-            };
+        } else if (SibylClient.keyPrevSuggestion.matchesKey(keyCode, scanCode)) {
+            suggestionSelection = Math.max(0, suggestionSelection - 1);
+        } else if (SibylClient.keyNextSuggestion.matchesKey(keyCode, scanCode)) {
+            suggestionSelection = Math.min(suggestionSelection + 1, suggestions.size() - 1);
         }
 
         return ParentElement.super.keyPressed(keyCode, scanCode, modifiers);
