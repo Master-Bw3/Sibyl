@@ -95,13 +95,16 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
         if (SibylClient.keySelectSuggestion.matchesKey(keyCode, scanCode)) {
             replaceDrawingWithSuggestion = true;
             stopDrawing();
+            return true;
         } else if (SibylClient.keyPrevSuggestion.matchesKey(keyCode, scanCode)) {
             suggestionSelection = Math.max(0, suggestionSelection - 1);
+            return true;
         } else if (SibylClient.keyNextSuggestion.matchesKey(keyCode, scanCode)) {
             suggestionSelection = Math.min(suggestionSelection + 1, suggestions.size() - 1);
+            return true;
         }
 
-        return ParentElement.super.keyPressed(keyCode, scanCode, modifiers);
+        return false;
     }
 
     @Override
