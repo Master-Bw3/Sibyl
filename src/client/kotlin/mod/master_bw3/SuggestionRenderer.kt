@@ -73,6 +73,8 @@ object SuggestionRenderer {
             val end = start + 6
 
             for (i in start until end) {
+                if (suggestions.size <= i) break
+
                 val suggestion = suggestions[i]
                 var text: MutableText =
                     PatternGlyph(suggestion).asText().siblings.first().copy().formatted(Formatting.LIGHT_PURPLE)
