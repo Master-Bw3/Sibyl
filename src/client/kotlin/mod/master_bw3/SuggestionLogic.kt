@@ -1,16 +1,23 @@
 package mod.master_bw3
 
+import dev.enjarai.trickster.Trickster
 import dev.enjarai.trickster.spell.Pattern
 import dev.enjarai.trickster.spell.SpellPart
 import dev.enjarai.trickster.spell.trick.Trick
 import dev.enjarai.trickster.spell.trick.Tricks
+import io.wispforest.lavender.book.BookLoader
+import io.wispforest.lavendermd.MarkdownProcessor
+import io.wispforest.lavendermd.compiler.OwoUICompiler
 import mod.master_bw3.pond.CoolerSpellPartWidget
-import net.minecraft.registry.RegistryKey
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
+import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 
 object SuggestionLogic {
+    val tricksterBook = BookLoader.loadedBooks().first { it.id() == Trickster.id("tome_of_tomfoolery") }
+
+
     fun selectPattern(
-        self: CoolerSpellPartWidget,
+        widget: CoolerSpellPartWidget,
         part: SpellPart,
         x: Float,
         y: Float,
@@ -18,18 +25,22 @@ object SuggestionLogic {
         mouseX: Double,
         mouseY: Double,
     ) {
-        self.suggestionSelection = 0
+        val drawingPattern = widget.drawingPattern
 
-        val drawingPattern = self.drawingPattern
+        var containsSelf = false
 
         if (drawingPattern != null) {
             val drawn: List<Pattern.PatternEntry> = Pattern.from(drawingPattern).entries()
 
-            self.suggestions = Tricks.REGISTRY
+            widget.suggestions = Tricks.REGISTRY
                 .map(Trick::getPattern)
                 .filter { pattern: Pattern ->
-                    if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries().containsAll(drawn)) {
+                    if (drawingPattern.isEmpty() || !pattern.entries().containsAll(drawn)) {
                         return@filter false
+                    }
+                    if (drawn == pattern.entries()) {
+                        containsSelf = true
+                        return@filter true
                     }
 
                     val cutPattern =
@@ -67,7 +78,51 @@ object SuggestionLogic {
                 .sortedBy { pattern: Pattern -> pattern.entries().size }
                 .toList()
         } else {
-            self.suggestions = listOf()
+            widget.suggestions = listOf()
         }
+
+        if (containsSelf && widget.suggestions.size > 1)
+            widget.suggestionSelection = 1
+        else
+            widget.suggestionSelection = 0
+    }
+
+    fun getDescription(pattern: Pattern): Text? {
+        val id = Tricks.REGISTRY.entrySet.firstOrNull { it.value.pattern == pattern }?.key?.value
+            ?: return null
+
+        val entry = tricksterBook.entries()
+            .firstOrNull { entry ->
+                entry.content.contains("trick-id=$id")
+            } ?: return null
+
+        val text = extractDescription(entry.content, id)
+            ?: return null
+
+        val processor = MarkdownProcessor.text();
+        val formatted = processor.process(text);
+
+        return formatted
+    }
+
+    private fun extractDescription(input: String, trickId: Identifier): String? {
+        val startTag = "<|glyph@trickster:templates|trick-id=$trickId"
+        val startIndex = input.indexOf(startTag)
+
+        if (startIndex == -1) return null
+
+
+        val descriptionStart = input.indexOf("\n", startIndex)
+        if (descriptionStart == -1) return null
+
+        val endIndex = input.indexOf(";;;;;", descriptionStart).takeIf { it != -1 }
+            ?: input.indexOf("<|glyph@trickster", descriptionStart)
+        if (endIndex == -1) return null
+
+        return input.substring(descriptionStart, endIndex)
+            .trim()
+            .lines()
+            .filterNot { it.trim() == "---" || it.trimStart().startsWith("<|cost-rule") }
+            .joinToString("\n")
     }
 }
