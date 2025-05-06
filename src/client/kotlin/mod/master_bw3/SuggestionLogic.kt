@@ -11,12 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 object SuggestionLogic {
     fun selectPattern(
         self: CoolerSpellPartWidget,
-        part: SpellPart,
-        x: Float,
-        y: Float,
-        size: Float,
-        mouseX: Double,
-        mouseY: Double,
     ) {
         self.suggestionSelection = 0
 
@@ -26,7 +20,7 @@ object SuggestionLogic {
             val drawn: List<Pattern.PatternEntry> = Pattern.from(drawingPattern).entries()
 
             self.suggestions = Tricks.REGISTRY
-                .map(Trick::getPattern)
+                .map(Trick<*>::getPattern)
                 .filter { pattern: Pattern ->
                     if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries().containsAll(drawn)) {
                         return@filter false

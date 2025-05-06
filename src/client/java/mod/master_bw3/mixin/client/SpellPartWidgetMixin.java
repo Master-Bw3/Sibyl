@@ -15,6 +15,7 @@ import mod.master_bw3.pond.CoolerSpellPartWidget;
 import net.minecraft.client.gui.ParentElement;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector2d;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -59,8 +60,8 @@ public abstract class SpellPartWidgetMixin implements ParentElement, CoolerSpell
     //////
 
     @Inject(method = "selectPattern", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;playSoundToPlayer(Lnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FF)V"))
-    private void selectPatternMixin(SpellPart part, float x, float y, float size, double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
-        SuggestionLogic.INSTANCE.selectPattern(this, part, x, y, size, mouseX, mouseY);
+    private void selectPatternMixin(SpellPart part, Vector2d position, float radius, Vector2d mouse, CallbackInfoReturnable<Boolean> cir) {
+        SuggestionLogic.INSTANCE.selectPattern(this);
     }
 
     @Inject(method = "<init>", at = @At(value = "TAIL"), remap = false)

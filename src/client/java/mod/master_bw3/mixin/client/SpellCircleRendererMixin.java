@@ -45,7 +45,7 @@ public abstract class SpellCircleRendererMixin implements CoolerSpellCircleRende
 
     //////
 
-    @Inject(method = "renderPart", at = @At(value = "INVOKE", target = "Ldev/enjarai/trickster/render/SpellCircleRenderer;drawGlyph(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Ldev/enjarai/trickster/spell/SpellPart;DDDDFLjava/util/function/Function;Lnet/minecraft/util/math/Vec3d;)V"))
+    @Inject(method = "renderPartInner", at = @At(value = "HEAD"))
     private void renderSuggestionStuff(MatrixStack matrices, VertexConsumerProvider vertexConsumers, SpellPart entry, double x, double y, double size, double startingAngle, float delta, Function<Float, Float> alphaGetter, Vec3d normal, CallbackInfo ci) {
         SuggestionRenderer.INSTANCE.renderSuggestionStuff(this, matrices, vertexConsumers, entry, x, y, size, startingAngle, delta, alphaGetter, normal);
     }

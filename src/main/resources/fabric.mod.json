@@ -42,7 +42,7 @@
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*",
 		"fabric-key-binding-api-v1": "*",
-		"trickster": ">=2.0.0-beta.6"
+		"trickster": ">=2.0.0-beta.18"
 	},
 	"suggests": {
 	},
