@@ -1,13 +1,16 @@
-package mod.master_bw3.sibyl
+package mod.master_bw3.sibyl.widget
 
 import dev.enjarai.trickster.spell.PatternGlyph
 import dev.enjarai.trickster.spell.trick.Tricks
+import io.wispforest.owo.braid.core.Alignment
 import io.wispforest.owo.braid.core.Color
 import io.wispforest.owo.braid.core.Insets
 import io.wispforest.owo.braid.framework.BuildContext
 import io.wispforest.owo.braid.framework.proxy.WidgetState
+import io.wispforest.owo.braid.framework.widget.Key
 import io.wispforest.owo.braid.framework.widget.StatefulWidget
 import io.wispforest.owo.braid.framework.widget.Widget
+import io.wispforest.owo.braid.widgets.basic.Align
 import io.wispforest.owo.braid.widgets.basic.Box
 import io.wispforest.owo.braid.widgets.basic.Padding
 import io.wispforest.owo.braid.widgets.flex.Column
@@ -18,6 +21,7 @@ import io.wispforest.owo.braid.widgets.stack.Stack
 import io.wispforest.owo.ui.container.Containers
 import io.wispforest.owo.ui.core.Component
 import io.wispforest.owo.ui.core.Sizing
+import mod.master_bw3.sibyl.SuggestionState
 import mod.master_bw3.sibyl.owo.theft.SibylTrickOverviewComponent
 import net.minecraft.text.Text
 import net.minecraft.util.Formatting
@@ -39,41 +43,50 @@ class SuggestionsWidget : StatefulWidget() {
             val suggestionTrickNames = mutableListOf<Text>()
             var suggestionComponent: Component? = null
 
+            var selectedTrickName = ""
+
             for (i in start until end) {
                 if (suggestions.size <= i) break
 
                 val suggestion = suggestions[i]
                 val trick = Tricks.lookup(suggestion)!!
 
-                val color = if (i == suggestionIndex) Formatting.LIGHT_PURPLE else Formatting.DARK_PURPLE
+                val color = if (i == suggestionIndex) Formatting.WHITE else Formatting.GRAY
                 suggestionTrickNames.add(PatternGlyph(suggestion).asText().siblings.first().copy().formatted(color))
 
                 if (i == suggestionIndex) {
-                    suggestionComponent = SibylTrickOverviewComponent.of(
+                    suggestionComponent = SibylTrickOverviewComponent.Companion.of(
                         trick, null,
                         Identifier.of("sibyl", "textures/gui/white_book.png")
                     )
+
+                    selectedTrickName = trick.name.string
                 }
             }
 
-            val widgets = suggestionTrickNames.map<Text, Widget>(::Label).toMutableList()
+
+            val widgets = suggestionTrickNames.map<Text, Widget>{
+                Padding(Insets.vertical(2.0), Align(Alignment.LEFT, Label(it)))
+            }.toMutableList()
 
             suggestionComponent?.let {
                 widgets.addFirst(
                     Padding(
-                        Insets.bottom(5.0),
+                        Insets.vertical(5.0),
                         OwoUIWidget {
-                            Containers.verticalFlow(Sizing.content(), Sizing.content())
-                                .child(it)
-                        })
+                            Containers.stack(Sizing.content(), Sizing.content())
+                                .child(suggestionComponent)
+                        }.key(Key.of(selectedTrickName))
+                    )
                 )
             }
 
-            return Stack(
-                Box(Color.BLACK.withA(0.5)),
-                Column(widgets),
-                Label(Text.literal(suggestions.size.toString()))
-            )
+//            widgets.add(MessageButton(
+//                Text.literal("inspector"),
+//                { AppState.of(context).activateInspector( )}))
+
+            return Column(widgets)
+
         }
     }
 }

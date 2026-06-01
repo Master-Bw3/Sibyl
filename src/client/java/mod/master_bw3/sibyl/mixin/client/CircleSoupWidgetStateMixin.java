@@ -15,7 +15,8 @@ import io.wispforest.owo.braid.widgets.flex.Row;
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState;
 import io.wispforest.owo.braid.widgets.stack.Stack;
 import mod.master_bw3.sibyl.SuggestionState;
-import mod.master_bw3.sibyl.SuggestionsWidget;
+import mod.master_bw3.sibyl.widget.SpellInfoSidePanelWidget;
+import mod.master_bw3.sibyl.widget.SuggestionsWidget;
 import net.minecraft.client.MinecraftClient;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +36,7 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
                     child,
                     new Transform(new Matrix4f().translate(0, 0, 100),
                             new Row(
-                                    new Sized(screenWidth * 0.25, null, new SuggestionsWidget()),
+                                    new Sized(screenWidth * 0.25, null, new SpellInfoSidePanelWidget()),
                                     new Transform(new Matrix4f().translate(-1, 0, 0), new Sized(1, null,
                                             new Box(Color.values(0.6, 0.6, 0.6)))))));
         }
