@@ -1,28 +1,22 @@
-package mod.master_bw3
+package mod.master_bw3.sibyl
 
 import dev.enjarai.trickster.spell.Pattern
-import dev.enjarai.trickster.spell.SpellPart
 import dev.enjarai.trickster.spell.trick.Trick
 import dev.enjarai.trickster.spell.trick.Tricks
-import mod.master_bw3.pond.CoolerSpellPartWidget
-import net.minecraft.registry.RegistryKey
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 object SuggestionLogic {
-    fun selectPattern(
-        self: CoolerSpellPartWidget,
-    ) {
-        self.suggestionSelection = 0
-
-        val drawingPattern = self.drawingPattern
-
-        if (drawingPattern != null) {
+    @JvmStatic
+    fun getSuggestions(
+        drawingPattern: List<Byte>
+    ): List<Pattern> {
             val drawn: List<Pattern.PatternEntry> = Pattern.from(drawingPattern).entries()
 
-            self.suggestions = Tricks.REGISTRY
+            return Tricks.REGISTRY
                 .map(Trick<*>::getPattern)
                 .filter { pattern: Pattern ->
-                    if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries().containsAll(drawn)) {
+                    if (drawingPattern.isEmpty() || drawn == pattern.entries() || !pattern.entries()
+                            .containsAll(drawn)
+                    ) {
                         return@filter false
                     }
 
@@ -60,8 +54,6 @@ object SuggestionLogic {
                 }
                 .sortedBy { pattern: Pattern -> pattern.entries().size }
                 .toList()
-        } else {
-            self.suggestions = listOf()
-        }
+
     }
 }

@@ -1,4 +1,4 @@
-package mod.master_bw3.mixin;
+package mod.master_bw3.sibyl.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

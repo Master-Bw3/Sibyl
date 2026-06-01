@@ -17,13 +17,13 @@
 	"entrypoints": {
 		"main": [
 			{
-				"value": "mod.master_bw3.Sibyl",
+				"value": "mod.master_bw3.sibyl.Sibyl",
 				"adapter": "kotlin"
 			}
 		],
 		"client": [
 			{
-				"value": "mod.master_bw3.SibylClient",
+				"value": "mod.master_bw3.sibyl.SibylClient",
 				"adapter": "kotlin"
 			}
 		]
@@ -36,21 +36,16 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.15.11",
+		"fabricloader": ">=0.19.0",
 		"minecraft": ">=1.21",
 		"java": ">=21",
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*",
 		"fabric-key-binding-api-v1": "*",
-		"trickster": ">=2.0.0-beta.18"
+		"trickster": ">=2.0.0-beta.40"
 	},
 	"suggests": {
 	},
 	"custom": {
-		"loom:injected_interfaces": {
-			"dev/enjarai/trickster/render/SpellCircleRenderer": ["mod/master_bw3/pond/CoolerSpellCircleRenderer"],
-			"dev/enjarai/trickster/screen/SpellPartWidget": ["mod/master_bw3/pond/CoolerSpellPartWidget"]
-
-		}
 	}
 }

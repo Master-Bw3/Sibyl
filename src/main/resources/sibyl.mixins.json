@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "mod.master_bw3.mixin",
+	"package": "mod.master_bw3.sibyl.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 	],
