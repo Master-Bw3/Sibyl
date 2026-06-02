@@ -1,10 +1,16 @@
 {
   "required": true,
-  "package": "mod.master_bw3.mixin.client",
+  "package": "mod.master_bw3.sibyl.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "SpellCircleRendererMixin",
-    "SpellPartWidgetMixin"
+    "BookContentLoaderMixin",
+    "CircleSoupElementStateMixin",
+    "CircleSoupWidgetAccessorMixin",
+    "CircleSoupWidgetStateMixin",
+    "CircleStateMixin",
+    "CircleWidgetAccessorMixin",
+    "CircleWidgetStateAccessorMixin",
+    "CircleWidgetStateMixin"
   ],
   "injectors": {
     "defaultRequire": 1

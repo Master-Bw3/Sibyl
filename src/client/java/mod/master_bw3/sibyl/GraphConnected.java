@@ -1,4 +1,4 @@
-package mod.master_bw3;
+package mod.master_bw3.sibyl;
 
 import dev.enjarai.trickster.spell.Pattern;
 
