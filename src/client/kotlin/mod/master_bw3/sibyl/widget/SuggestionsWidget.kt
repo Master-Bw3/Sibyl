@@ -4,6 +4,7 @@ import dev.enjarai.trickster.spell.PatternGlyph
 import dev.enjarai.trickster.spell.trick.Trick
 import dev.enjarai.trickster.spell.trick.Tricks
 import io.wispforest.owo.braid.core.Alignment
+import io.wispforest.owo.braid.core.AppState
 import io.wispforest.owo.braid.core.Insets
 import io.wispforest.owo.braid.framework.BuildContext
 import io.wispforest.owo.braid.framework.proxy.WidgetState
@@ -12,7 +13,10 @@ import io.wispforest.owo.braid.framework.widget.Widget
 import io.wispforest.owo.braid.widgets.basic.Align
 import io.wispforest.owo.braid.widgets.basic.EmptyWidget
 import io.wispforest.owo.braid.widgets.basic.Padding
+import io.wispforest.owo.braid.widgets.basic.Sized
+import io.wispforest.owo.braid.widgets.button.MessageButton
 import io.wispforest.owo.braid.widgets.flex.Column
+import io.wispforest.owo.braid.widgets.inspector.BraidInspector
 import io.wispforest.owo.braid.widgets.label.Label
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState
 import net.minecraft.text.Text
@@ -54,11 +58,11 @@ class SuggestionsWidget : StatefulWidget() {
                 Padding(Insets.vertical(2.0), Align(Alignment.LEFT, Label(it)))
             }.toMutableList()
 
-            val trickWidget = if (selectedTrick != null) TrickInfoWidget(selectedTrick) else EmptyWidget.INSTANCE
+            val trickWidget = Sized(null, 220, if (selectedTrick != null) TrickInfoWidget(selectedTrick) else EmptyWidget.INSTANCE)
 
             return Column(
                 trickWidget,
-                Column(widgets)
+                Column(widgets),
             )
         }
     }

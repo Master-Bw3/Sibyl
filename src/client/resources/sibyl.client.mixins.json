@@ -9,6 +9,7 @@
     "CircleSoupWidgetStateMixin",
     "CircleStateMixin",
     "CircleWidgetAccessorMixin",
+    "CircleWidgetStateAccessorMixin",
     "CircleWidgetStateMixin"
   ],
   "injectors": {

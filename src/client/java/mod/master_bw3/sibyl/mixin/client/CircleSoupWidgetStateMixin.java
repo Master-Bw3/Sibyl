@@ -1,32 +1,36 @@
 package mod.master_bw3.sibyl.mixin.client;
 
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.enjarai.trickster.screen.scribing.CircleSoupState;
 import dev.enjarai.trickster.screen.scribing.CircleSoupWidget;
+import dev.enjarai.trickster.spell.Pattern;
+import dev.enjarai.trickster.spell.PatternGlyph;
 import dev.enjarai.trickster.spell.SpellView;
 import io.wispforest.owo.braid.core.Color;
+import io.wispforest.owo.braid.core.KeyModifiers;
 import io.wispforest.owo.braid.framework.BuildContext;
 import io.wispforest.owo.braid.framework.proxy.WidgetState;
 import io.wispforest.owo.braid.framework.widget.Widget;
-import io.wispforest.owo.braid.widgets.basic.Box;
-import io.wispforest.owo.braid.widgets.basic.Sized;
-import io.wispforest.owo.braid.widgets.basic.Transform;
+import io.wispforest.owo.braid.framework.widget.WidgetSetupCallback;
+import io.wispforest.owo.braid.widgets.basic.*;
 import io.wispforest.owo.braid.widgets.flex.Row;
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState;
 import io.wispforest.owo.braid.widgets.stack.Stack;
+import mod.master_bw3.sibyl.SibylClient;
 import mod.master_bw3.sibyl.pond.CircleSoupWidgetStateDuck;
 import mod.master_bw3.sibyl.widget.SibylEditorState;
 import mod.master_bw3.sibyl.widget.SpellInfoSidePanelWidget;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.util.InputUtil;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import us.kenny.ModifierManager;
 
 import java.util.function.Supplier;
 
@@ -42,31 +46,67 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
     @Shadow
     private boolean isPondering;
 
-    @Inject(method = "build", at = @At("HEAD"))
-    private void exposeBuildContext(BuildContext context, CallbackInfoReturnable<Widget> cir) {
-        sibyl$buildContext = context;
-    }
-
     @WrapOperation(method = "build", at = @At(value = "NEW", target = "io/wispforest/owo/braid/widgets/sharedstate/SharedState"))
     private SharedState addSuggestionPanel(Supplier initState, Widget child, Operation<SharedState<CircleSoupState>> original) {
         var screenWidth = MinecraftClient.getInstance().currentScreen.width;
+        var screenHeight = MinecraftClient.getInstance().currentScreen.height;
         var widget = child;
         if (((CircleSoupWidgetAccessorMixin) this.widget()).sibyl$isMutable()) {
-            widget = new Stack(
-                    child,
-                    new Transform(new Matrix4f().translate(0, 0, 100),
-                            new Row(
-                                    new Sized(screenWidth * 0.25, null, new SpellInfoSidePanelWidget(isPondering, sibyl$focusedSpellView)),
-                                    new Transform(new Matrix4f().translate(-1, 0, 0), new Sized(1, null,
-                                            new Box(Color.values(0.6, 0.6, 0.6)))))));
+            widget = new Builder((context) -> {
+                sibyl$buildContext = context;
+
+                return new Stack(
+                        child,
+                        new Transform(new Matrix4f().translate(0, 0, 100),
+                                new Row(
+                                        new Sized(screenWidth * 0.25, screenHeight, new SpellInfoSidePanelWidget(isPondering, sibyl$focusedSpellView)),
+                                        new Transform(new Matrix4f().translate(-1, 0, 0), new Sized(1, null,
+                                                new Box(Color.values(0.6, 0.6, 0.6)))))));
+            });
         }
 
         return original.call(initState, new SharedState<>(SibylEditorState::new, widget));
     }
 
-    @Override
-    public BuildContext sibyl$getBuildContext() {
-        return sibyl$buildContext;
+    @WrapMethod(method = "keyUp")
+    private boolean addSibylKeyEvents(int keyCode, KeyModifiers modifiers, Operation<Boolean> original) {
+        if (SibylClient.keyNextSuggestion.matchesKey(keyCode, -1)
+                && ModifierManager.shouldActivate(SibylClient.keyNextSuggestion.getTranslationKey(), InputUtil.Type.KEYSYM.createFromCode(keyCode)))
+        {
+            SharedState.set(sibyl$buildContext, SibylEditorState.class, (state) ->
+                    state.setSuggestionIndex(Math.min(state.getSuggestionIndex() + 1, Math.max(0, state.getSuggestions().size() - 1))));
+            return true;
+        }
+
+        if (SibylClient.keyPrevSuggestion.matchesKey(keyCode, -1)
+                && ModifierManager.shouldActivate(SibylClient.keyPrevSuggestion.getTranslationKey(), InputUtil.Type.KEYSYM.createFromCode(keyCode)))
+        {
+            SharedState.set(sibyl$buildContext, SibylEditorState.class, (state) ->
+                    state.setSuggestionIndex(Math.max(0, state.getSuggestionIndex() - 1)));
+            return true;
+        }
+
+        var suggestions = SharedState.get(sibyl$buildContext, SibylEditorState.class).getSuggestions();
+        var suggestionIndex = SharedState.get(sibyl$buildContext, SibylEditorState.class).getSuggestionIndex();
+        if (SibylClient.keySelectSuggestion.matchesKey(keyCode, -1)
+                && ModifierManager.shouldActivate(SibylClient.keySelectSuggestion.getTranslationKey(), InputUtil.Type.KEYSYM.createFromCode(keyCode))
+                && SharedState.get(sibyl$buildContext, CircleSoupState.class).drawingIn != null
+                && !suggestions.isEmpty())
+        {
+            SharedState.set(sibyl$buildContext, CircleSoupState.class, (state) -> applySuggestion(state, suggestions.get(suggestionIndex)));
+            return true;
+        }
+
+        return original.call(keyCode, modifiers);
+    }
+
+
+
+    @Unique
+    void applySuggestion(CircleSoupState state, Pattern suggestion) {
+            var drawingIn = state.drawingIn;
+            ((CircleWidgetStateAccessorMixin) drawingIn).sibyl$finishDrawing(false, SharedState.get(sibyl$buildContext, CircleSoupState.class));
+            ((CircleWidgetAccessorMixin) drawingIn.widget()).sibyl$getPartView().replaceGlyph(new PatternGlyph(suggestion));
     }
 
 

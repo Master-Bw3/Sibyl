@@ -5,8 +5,5 @@ import io.wispforest.owo.braid.framework.BuildContext;
 import org.jetbrains.annotations.Nullable;
 
 public interface CircleSoupWidgetStateDuck {
-    BuildContext sibyl$getBuildContext();
-
     void sibyl$setFocusedSpellView(@Nullable SpellView spellView);
-
 }

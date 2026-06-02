@@ -2,14 +2,17 @@ package mod.master_bw3.sibyl.widget
 
 import dev.enjarai.trickster.spell.trick.Trick
 import dev.enjarai.trickster.spell.trick.Tricks
+import io.wispforest.owo.braid.core.Alignment
 import io.wispforest.owo.braid.core.Insets
 import io.wispforest.owo.braid.framework.BuildContext
 import io.wispforest.owo.braid.framework.widget.Key
 import io.wispforest.owo.braid.framework.widget.StatelessWidget
 import io.wispforest.owo.braid.framework.widget.Widget
+import io.wispforest.owo.braid.widgets.basic.Align
 import io.wispforest.owo.braid.widgets.basic.Padding
 import io.wispforest.owo.braid.widgets.basic.Sized
 import io.wispforest.owo.braid.widgets.flex.Column
+import io.wispforest.owo.braid.widgets.flex.Flexible
 import io.wispforest.owo.braid.widgets.owoui.OwoUIWidget
 import io.wispforest.owo.braid.widgets.scroll.Scrollable
 import io.wispforest.owo.ui.container.Containers
@@ -42,10 +45,10 @@ class TrickInfoWidget(val trick: Trick<*>) : StatelessWidget() {
 
         TrickDescriptions.descriptions[trickID]?.let { description ->
             widgets.add(
-                Padding(
-                    Insets.vertical(5.0),
-                    Sized(
-                        null, 60, Scrollable(
+                Flexible(
+                    Padding(
+                        Insets.vertical(5.0),
+                        Scrollable(
                             false,
                             true,
                             null,

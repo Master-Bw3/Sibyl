@@ -1,27 +1,36 @@
 package mod.master_bw3.sibyl
 
-import io.wispforest.lavender.Lavender
 import io.wispforest.lavender.book.BookLoader
 import io.wispforest.lavender.md.features.ItemTagFeature
 import io.wispforest.lavender.md.features.OwoUIModelFeature
-import io.wispforest.lavender.md.features.PageBreakFeature
-import io.wispforest.lavender.md.features.RecipeFeature
 import io.wispforest.lavendermd.MarkdownProcessor
 import io.wispforest.lavendermd.compiler.OwoUICompiler
-import io.wispforest.lavendermd.feature.BlockStateFeature
-import io.wispforest.lavendermd.feature.EntityFeature
-import io.wispforest.lavendermd.feature.ImageFeature
-import io.wispforest.lavendermd.feature.ItemStackFeature
-import io.wispforest.lavendermd.feature.KeybindFeature
-import io.wispforest.lavendermd.feature.OwoUITemplateFeature
-import io.wispforest.lavendermd.feature.TranslationsFeature
+import io.wispforest.lavendermd.feature.*
 import io.wispforest.owo.ui.core.Component
+import io.wispforest.owo.ui.parsing.UIModel
+import io.wispforest.owo.ui.parsing.UIModelLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.util.Identifier
+
 
 object TrickDescriptions {
 
     val descriptions: MutableMap<Identifier, Component> = mutableMapOf()
+
+    val template = object : OwoUITemplateFeature.TemplateProvider {
+        override fun <C : Component> template(
+            model: Identifier,
+            expectedClass: Class<C>,
+            templateName: String,
+            templateParams: Map<String, String>
+        ): C {
+            val params = HashMap<String, String>()
+            params["book-texture"] = Identifier.of("sibyl", "textures/gui/white_book.png").toString()
+            params.putAll(templateParams)
+
+            return UIModelLoader.get(model)!!.expandTemplate<C>(expectedClass, templateName, params)
+        }
+    }
 
     val processor = MarkdownProcessor.richText(0)
         .copyWith { OwoUICompiler() }
@@ -30,7 +39,8 @@ object TrickDescriptions {
             BlockStateFeature(),
             ItemStackFeature(MinecraftClient.getInstance().world?.getRegistryManager()), EntityFeature(),
             KeybindFeature(),
-            ItemTagFeature(), OwoUIModelFeature(), TranslationsFeature()
+            ItemTagFeature(), OwoUIModelFeature(), TranslationsFeature(),
+            OwoUITemplateFeature(template)
         )
 
     @JvmStatic
@@ -53,4 +63,6 @@ object TrickDescriptions {
             }
         }
     }
+
+
 }

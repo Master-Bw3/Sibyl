@@ -9,7 +9,8 @@
 	],
 	"contact": {
 		"homepage": "https://master-bw3.carrd.co",
-		"sources": "https://github.com/Master-Bw3/Sibyl"
+		"sources": "https://github.com/Master-Bw3/Sibyl",
+		"issues": "https://github.com/Master-Bw3/Sibyl/issues"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/sibyl/icon.png",
@@ -42,7 +43,8 @@
 		"fabric-api": "*",
 		"fabric-language-kotlin": "*",
 		"fabric-key-binding-api-v1": "*",
-		"trickster": ">=2.0.0-beta.40"
+		"trickster": ">=2.0.0-beta.40",
+		"multi-key-bindings": ">=1.3.4+1.21.1"
 	},
 	"suggests": {
 	},
