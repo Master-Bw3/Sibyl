@@ -3,8 +3,12 @@
   "package": "mod.master_bw3.sibyl.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "BookContentLoaderMixin",
+    "CircleSoupElementStateMixin",
     "CircleSoupWidgetAccessorMixin",
     "CircleSoupWidgetStateMixin",
+    "CircleStateMixin",
+    "CircleWidgetAccessorMixin",
     "CircleWidgetStateMixin"
   ],
   "injectors": {

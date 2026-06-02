@@ -12,7 +12,7 @@ import io.wispforest.owo.braid.widgets.basic.Sized;
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState;
 import io.wispforest.owo.braid.widgets.stack.Stack;
 import mod.master_bw3.sibyl.SuggestionLogic;
-import mod.master_bw3.sibyl.SuggestionState;
+import mod.master_bw3.sibyl.widget.SibylEditorState;
 import mod.master_bw3.sibyl.mixinImpl.CircleWidgetStateMixinImpl;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,8 +41,8 @@ public abstract class CircleWidgetStateMixin extends WidgetState<CircleWidget> {
 
     @WrapOperation(method = "build", at = @At(value = "NEW", target = "io/wispforest/owo/braid/widgets/basic/Sized", ordinal = 0))
     private Sized addSuggestionGlyph(double width, double height, Widget child, Operation<Sized> original) {
-        var suggestions = SharedState.get(sibyl$buildContext, SuggestionState.class).getSuggestions();
-        var suggestionIndex = SharedState.get(sibyl$buildContext, SuggestionState.class).getSuggestionIndex();
+        var suggestions = SharedState.get(sibyl$buildContext, SibylEditorState.class).getSuggestions();
+        var suggestionIndex = SharedState.get(sibyl$buildContext, SibylEditorState.class).getSuggestionIndex();
 
         if (drawingPattern != null && !suggestions.isEmpty()) {
             var clampedSuggestionIndex = Math.min(suggestionIndex, suggestions.size() - 1);
@@ -57,7 +57,6 @@ public abstract class CircleWidgetStateMixin extends WidgetState<CircleWidget> {
     @Inject(method = "mouseMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;getInstance()Lnet/minecraft/client/MinecraftClient;"))
     private void updateDrawingStateInMouseMove(double x, double y, CallbackInfo ci) {
         setState(this::sibyl$updateSuggestions);
-
     }
 
     @Inject(method = "startDrawing", at = @At("TAIL"))
@@ -73,7 +72,7 @@ public abstract class CircleWidgetStateMixin extends WidgetState<CircleWidget> {
 
     @Unique
     private void sibyl$updateSuggestions() {
-        SharedState.set(sibyl$buildContext, SuggestionState.class, (state) -> {
+        SharedState.set(sibyl$buildContext, SibylEditorState.class, (state) -> {
                     if (drawingPattern == null || drawingPattern.size() <= 1) {
                         state.setSuggestions(List.of());
                     } else {
