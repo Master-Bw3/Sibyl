@@ -37,9 +37,6 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
     private SpellView sibyl$focusedSpellView;
 
     @Unique
-    private SpellView sibyl$hoveredSpellView;
-
-    @Unique
     private BuildContext sibyl$buildContext;
 
     @Shadow
@@ -59,7 +56,7 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
                     child,
                     new Transform(new Matrix4f().translate(0, 0, 100),
                             new Row(
-                                    new Sized(screenWidth * 0.25, null, new SpellInfoSidePanelWidget(isPondering, sibyl$focusedSpellView, sibyl$hoveredSpellView)),
+                                    new Sized(screenWidth * 0.25, null, new SpellInfoSidePanelWidget(isPondering, sibyl$focusedSpellView)),
                                     new Transform(new Matrix4f().translate(-1, 0, 0), new Sized(1, null,
                                             new Box(Color.values(0.6, 0.6, 0.6)))))));
         }
@@ -78,8 +75,4 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
         setState(() -> sibyl$focusedSpellView = spellView);
     }
 
-    @Override
-    public void sibyl$setHoveredSpellView(SpellView spellView) {
-        setState(() -> sibyl$hoveredSpellView = spellView);
-    }
 }

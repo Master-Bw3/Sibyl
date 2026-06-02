@@ -19,6 +19,7 @@ import io.wispforest.owo.braid.widgets.focus.Focusable;
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState;
 import io.wispforest.owo.braid.widgets.stack.Stack;
 import mod.master_bw3.sibyl.pond.CircleSoupWidgetStateDuck;
+import mod.master_bw3.sibyl.pond.CircleStateDuck;
 import mod.master_bw3.sibyl.widget.SibylEditorState;
 import mod.master_bw3.sibyl.widget.SpellInfoSidePanelWidget;
 import net.minecraft.client.MinecraftClient;
@@ -38,14 +39,26 @@ import java.util.function.Supplier;
 public abstract class CircleSoupElementStateMixin extends WidgetState<CircleSoupElement> {
 
     @Inject(
-            method = "lambda$build$2",
+            method = "lambda$build$5",
             at = @At("HEAD")
     )
     private static void onMove(
-            @Coerce Object c, BuildContext context1, double toX, double toY, CallbackInfo ci
+            @Coerce CircleStateDuck c, BuildContext context1, double toX, double toY, CallbackInfo ci
     ) {
         if ( Focusable.isFocused(context1)) {
-            System.out.println("HEY");
+            SharedState.set(context1, SibylEditorState.class, (state) -> state.setHoveredSpellView(c.sibyl$getSpellView()));
+        }
+    }
+
+    @Inject(
+            method = "lambda$build$6",
+            at = @At("HEAD")
+    )
+    private static void onExit(
+            @Coerce CircleStateDuck c, BuildContext context1, CallbackInfo ci
+    ) {
+        if ( Focusable.isFocused(context1)) {
+            SharedState.set(context1, SibylEditorState.class, (state) -> state.setHoveredSpellView(null));
         }
     }
 

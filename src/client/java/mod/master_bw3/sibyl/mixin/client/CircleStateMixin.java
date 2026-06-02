@@ -3,7 +3,7 @@ package mod.master_bw3.sibyl.mixin.client;
 import dev.enjarai.trickster.screen.scribing.CircleSoupWidget;
 import dev.enjarai.trickster.spell.SpellView;
 import mod.master_bw3.sibyl.pond.CircleSoupWidgetStateDuck;
-import org.objectweb.asm.Opcodes;
+import mod.master_bw3.sibyl.pond.CircleStateDuck;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(targets = "dev.enjarai.trickster.screen.scribing.CircleSoupWidget$State$CircleState")
-public abstract class CircleStateMixin {
+public abstract class CircleStateMixin implements CircleStateDuck {
 
     @Shadow(aliases = "this$0")
     private CircleSoupWidget.State outer;
@@ -26,5 +26,10 @@ public abstract class CircleStateMixin {
         var state = ((CircleSoupWidgetStateDuck) outer);
 
         state.sibyl$setFocusedSpellView(partView);
+    }
+
+    @Override
+    public SpellView sibyl$getSpellView() {
+        return partView;
     }
 }

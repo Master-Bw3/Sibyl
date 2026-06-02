@@ -9,6 +9,4 @@ public interface CircleSoupWidgetStateDuck {
 
     void sibyl$setFocusedSpellView(@Nullable SpellView spellView);
 
-    void sibyl$setHoveredSpellView(@Nullable SpellView spellView);
-
 }

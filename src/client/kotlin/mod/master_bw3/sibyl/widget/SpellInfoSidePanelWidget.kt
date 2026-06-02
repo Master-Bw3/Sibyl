@@ -16,7 +16,7 @@ import io.wispforest.owo.braid.widgets.basic.Padding
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState
 import io.wispforest.owo.braid.widgets.stack.Stack
 
-class SpellInfoSidePanelWidget(val isPondering: Boolean, val focusedSpellView: SpellView?, val hoveredSpellView: SpellView?) : StatefulWidget() {
+class SpellInfoSidePanelWidget(val isPondering: Boolean, val focusedSpellView: SpellView?) : StatefulWidget() {
     override fun createState(): WidgetState<*> = State()
 
 
@@ -24,8 +24,9 @@ class SpellInfoSidePanelWidget(val isPondering: Boolean, val focusedSpellView: S
         override fun build(context: BuildContext?): Widget {
             val pondering = widget().isPondering
             val focusedGlyph = widget().focusedSpellView?.part?.glyph
-            val hoveredGlyph = widget().hoveredSpellView?.part?.glyph
             val isDrawing = SharedState.get(context, CircleSoupState::class.java).drawingIn != null
+            val hoveredSpellView = SharedState.get(context, SibylEditorState::class.java).hoveredSpellView
+            val hoveredGlyph = hoveredSpellView?.part?.glyph
 
             print(isDrawing)
 
