@@ -65,10 +65,9 @@ dependencies {
 
 
     modImplementation "dev.enjarai:trickster:${project.trickster_version}"
-    modImplementation "maven.modrinth:multi-key-bindings:${project.multi_key_bindings}"
 
     modCompileOnly modLocalRuntime("com.terraformersmc:modmenu:${project.modmenu}")
-
+    modCompileOnly  modLocalRuntime("maven.modrinth:multi-key-bindings:${project.multi_key_bindings}")
 }
 
 processResources {

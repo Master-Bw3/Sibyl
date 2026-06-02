@@ -7,23 +7,25 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.enjarai.trickster.screen.scribing.CircleSoupState;
 import dev.enjarai.trickster.screen.scribing.CircleSoupWidget;
 import dev.enjarai.trickster.spell.Pattern;
-import dev.enjarai.trickster.spell.PatternGlyph;
 import dev.enjarai.trickster.spell.SpellView;
+import io.vavr.Function2;
 import io.wispforest.owo.braid.core.Color;
 import io.wispforest.owo.braid.core.KeyModifiers;
 import io.wispforest.owo.braid.framework.BuildContext;
 import io.wispforest.owo.braid.framework.proxy.WidgetState;
 import io.wispforest.owo.braid.framework.widget.Widget;
-import io.wispforest.owo.braid.framework.widget.WidgetSetupCallback;
 import io.wispforest.owo.braid.widgets.basic.*;
 import io.wispforest.owo.braid.widgets.flex.Row;
 import io.wispforest.owo.braid.widgets.sharedstate.SharedState;
 import io.wispforest.owo.braid.widgets.stack.Stack;
 import mod.master_bw3.sibyl.SibylClient;
+import mod.master_bw3.sibyl.compat.MultiKeyTest;
 import mod.master_bw3.sibyl.pond.CircleSoupWidgetStateDuck;
 import mod.master_bw3.sibyl.widget.SibylEditorState;
 import mod.master_bw3.sibyl.widget.SpellInfoSidePanelWidget;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +34,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import us.kenny.ModifierManager;
 
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Mixin(CircleSoupWidget.State.class)
@@ -70,17 +73,18 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
 
     @WrapMethod(method = "keyUp")
     private boolean addSibylKeyEvents(int keyCode, KeyModifiers modifiers, Operation<Boolean> original) {
-        if (SibylClient.keyNextSuggestion.matchesKey(keyCode, -1)
-                && ModifierManager.shouldActivate(SibylClient.keyNextSuggestion.getTranslationKey(), InputUtil.Type.KEYSYM.createFromCode(keyCode)))
-        {
+        Function2<KeyBinding, Integer, Boolean> multiKeyTest = (a, b) -> true;
+        if (FabricLoader.getInstance().isModLoaded("multi-key-bindings")) {
+            multiKeyTest = MultiKeyTest::multiKeyTest;
+        }
+
+        if (SibylClient.keyNextSuggestion.matchesKey(keyCode, -1) && multiKeyTest.apply(SibylClient.keyNextSuggestion, keyCode)) {
             SharedState.set(sibyl$buildContext, SibylEditorState.class, (state) ->
                     state.setSuggestionIndex(Math.min(state.getSuggestionIndex() + 1, Math.max(0, state.getSuggestions().size() - 1))));
             return true;
         }
 
-        if (SibylClient.keyPrevSuggestion.matchesKey(keyCode, -1)
-                && ModifierManager.shouldActivate(SibylClient.keyPrevSuggestion.getTranslationKey(), InputUtil.Type.KEYSYM.createFromCode(keyCode)))
-        {
+        if (SibylClient.keyPrevSuggestion.matchesKey(keyCode, -1) && multiKeyTest.apply(SibylClient.keyPrevSuggestion, keyCode)) {
             SharedState.set(sibyl$buildContext, SibylEditorState.class, (state) ->
                     state.setSuggestionIndex(Math.max(0, state.getSuggestionIndex() - 1)));
             return true;
@@ -106,7 +110,7 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
     void applySuggestion(CircleSoupState state, Pattern suggestion) {
             var drawingIn = state.drawingIn;
             ((CircleWidgetStateAccessorMixin) drawingIn).sibyl$finishDrawing(false, SharedState.get(sibyl$buildContext, CircleSoupState.class));
-            ((CircleWidgetAccessorMixin) drawingIn.widget()).sibyl$getPartView().replaceGlyph(new PatternGlyph(suggestion));
+            ((CircleWidgetAccessorMixin) drawingIn.widget()).getUpdatePattern().accept(suggestion);
     }
 
 

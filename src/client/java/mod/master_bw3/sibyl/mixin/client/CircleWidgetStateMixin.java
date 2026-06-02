@@ -6,7 +6,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import dev.enjarai.trickster.screen.scribing.CircleSoupState;
 import dev.enjarai.trickster.screen.scribing.CircleWidget;
 import dev.enjarai.trickster.spell.Pattern;
-import dev.enjarai.trickster.spell.PatternGlyph;
 import io.wispforest.owo.braid.core.KeyModifiers;
 import io.wispforest.owo.braid.framework.BuildContext;
 import io.wispforest.owo.braid.framework.proxy.WidgetState;
@@ -113,7 +112,7 @@ public abstract class CircleWidgetStateMixin extends WidgetState<CircleWidget> {
     void applySuggestion(CircleSoupState state, Pattern suggestion) {
         var drawingIn = state.drawingIn;
         ((CircleWidgetStateAccessorMixin) drawingIn).sibyl$finishDrawing(false, SharedState.get(sibyl$buildContext, CircleSoupState.class));
-        ((CircleWidgetAccessorMixin) drawingIn.widget()).sibyl$getPartView().replaceGlyph(new PatternGlyph(suggestion));
+        ((CircleWidgetAccessorMixin) drawingIn.widget()).getUpdatePattern().accept(suggestion);
     }
 }
 
