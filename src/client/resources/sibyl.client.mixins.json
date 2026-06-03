@@ -4,13 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "client": [
     "BookContentLoaderMixin",
-    "CircleSoupElementStateMixin",
-    "CircleSoupWidgetAccessorMixin",
-    "CircleSoupWidgetStateMixin",
-    "CircleStateMixin",
-    "CircleWidgetAccessorMixin",
-    "CircleWidgetStateAccessorMixin",
-    "CircleWidgetStateMixin"
+    "CircleWidgetAccessorMixin"
   ],
   "injectors": {
     "defaultRequire": 1

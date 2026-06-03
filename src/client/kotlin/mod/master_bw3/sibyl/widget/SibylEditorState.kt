@@ -5,6 +5,8 @@ import dev.enjarai.trickster.spell.SpellView
 import io.wispforest.owo.braid.widgets.sharedstate.ShareableState
 
 class SibylEditorState : ShareableState() {
+    var drawingPattern: List<Byte>? = null
+
     var suggestions: List<Pattern> = listOf()
 
     var suggestionIndex = 0

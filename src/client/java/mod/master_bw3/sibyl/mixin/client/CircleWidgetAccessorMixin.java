@@ -10,10 +10,6 @@ import java.util.function.Consumer;
 
 @Mixin(CircleWidget.class)
 public interface CircleWidgetAccessorMixin {
-    @Accessor("partView")
-    SpellView getPartView();
-
-
     @Accessor("updatePattern")
     Consumer<Pattern> getUpdatePattern();
 }

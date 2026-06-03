@@ -8,14 +8,9 @@ import org.lwjgl.glfw.GLFW
 
 
 object SibylClient : ClientModInitializer {
-	@JvmField
-	var keySelectSuggestion: KeyBinding? = null;
-
-	@JvmField
-	var keyNextSuggestion: KeyBinding? = null;
-
-
-	lateinit var keyPrevSuggestion: KeyBinding;
+	lateinit var keySelectSuggestion: KeyBinding
+	lateinit var keyNextSuggestion: KeyBinding
+	lateinit var keyPrevSuggestion: KeyBinding
 
 	override fun onInitializeClient() {
 		keySelectSuggestion = KeyBindingHelper.registerKeyBinding(
@@ -44,5 +39,7 @@ object SibylClient : ClientModInitializer {
 				"sibyl.keys.gui" // The translation key of the keybinding's category.
 			)
 		)
+
+		registerSpellEditorFunctions()
 	}
 }

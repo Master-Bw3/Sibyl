@@ -58,7 +58,7 @@ class SibylGlyphComponent(var pattern: Pattern, var size: Int, val color: Color)
                 pos.x - dotSize, pos.y + dotSize,
                 pos.x + dotSize, pos.y + dotSize,
                 pos.x + dotSize, pos.y - dotSize,
-                0f, r, g, b, if (isLinked) 0.9f else 0.5f
+                0f, r, g, b, if (isLinked) 0.9f else 0.5f, true
             )
         }
 

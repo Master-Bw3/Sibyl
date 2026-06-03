@@ -47,7 +47,7 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
     private BuildContext sibyl$buildContext;
 
     @Shadow
-    private boolean isPondering;
+    private SpellView primaryPonder;
 
     @WrapOperation(method = "build", at = @At(value = "NEW", target = "io/wispforest/owo/braid/widgets/sharedstate/SharedState"))
     private SharedState addSuggestionPanel(Supplier initState, Widget child, Operation<SharedState<CircleSoupState>> original) {
@@ -62,13 +62,13 @@ public abstract class CircleSoupWidgetStateMixin extends WidgetState<CircleSoupW
                         child,
                         new Transform(new Matrix4f().translate(0, 0, 100),
                                 new Row(
-                                        new Sized(screenWidth * 0.25, screenHeight, new SpellInfoSidePanelWidget(isPondering, sibyl$focusedSpellView)),
+                                        new Sized(screenWidth * 0.25, screenHeight, new SpellInfoSidePanelWidget(primaryPonder != null, sibyl$focusedSpellView)),
                                         new Transform(new Matrix4f().translate(-1, 0, 0), new Sized(1, null,
                                                 new Box(Color.values(0.6, 0.6, 0.6)))))));
             });
         }
 
-        return original.call(initState, new SharedState<>(SibylEditorState::new, widget));
+        return original.call(initState, widget);
     }
 
     @WrapMethod(method = "keyUp")
