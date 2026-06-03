@@ -6,6 +6,7 @@ import dev.enjarai.trickster.api.event.CircleSoupWidgetEvents
 import dev.enjarai.trickster.api.event.CircleWidgetEvents
 import dev.enjarai.trickster.spell.Pattern
 import io.wispforest.owo.braid.core.Color
+import io.wispforest.owo.braid.framework.BuildContext
 import io.wispforest.owo.braid.widgets.basic.Box
 import io.wispforest.owo.braid.widgets.basic.CustomDraw
 import io.wispforest.owo.braid.widgets.basic.Sized
@@ -57,6 +58,16 @@ internal fun registerSpellEditorFunctions() {
         }
     }
 
+    val updateHoverPart = { state: CircleWidget.State.ApiAccess, context: BuildContext ->
+        val notDrawing = SharedState.get(context, CircleSoupState::class.java).drawingIn == null
+
+        if (notDrawing && state.isMouseInside && Focusable.isFocused(context)) {
+            SharedState.set(context, SibylEditorState::class.java) { sharedState ->
+                sharedState.hoveredSpellView = state.partView
+            }
+        }
+    }
+
     // update suggestions
     CircleWidgetEvents.MOUSE_MOVE.register { state, context, x, y ->
         val prevDrawingPattern = SharedState.get(context, SibylEditorState::class.java).drawingPattern
@@ -73,13 +84,11 @@ internal fun registerSpellEditorFunctions() {
             }
         }
 
-        val notDrawing = SharedState.get(context, CircleSoupState::class.java).drawingIn == null
+        updateHoverPart(state, context)
+    }
 
-        if (notDrawing && state.isMouseInside && Focusable.isFocused(context)) {
-            SharedState.set(context, SibylEditorState::class.java) { sharedState ->
-                sharedState.hoveredSpellView = state.partView
-            }
-        }
+    CircleWidgetEvents.BUILD.register { state, context, circleWidgetChild ->
+        updateHoverPart(state, context)
     }
 
     CircleWidgetEvents.MOUSE_LEAVE.register { state, context ->
